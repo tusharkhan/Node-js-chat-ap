@@ -1,0 +1,86 @@
+<div class="modal-wrapper" id="add-user-modal">
+    <div class="modal">
+        <a href="#" onclick="closeModal()" class="modal-close">+</a>
+        <div class="modal-title">
+            <h2>Create New User</h2>
+        </div>
+        <div class="modal-body">
+            <form id="add-user-form" method="post" enctype="multipart/form-data" action="/users">
+                <input type="text" placeholder="enter name" name="name" />
+                <p class="error name-error"></p>
+
+                <input type="text" placeholder="enter email" name="email" />
+                <p class="error email-error"></p>
+
+                <input type="text" placeholder="enter mobile" name="mobile" />
+                <p class="error mobile-error"></p>
+
+                <input
+                        type="password"
+                        placeholder="enter password"
+                        name="password"
+                />
+                <p class="error password-error"></p>
+
+                <input type="file" name="avatar" />
+                <p class="error avatar-error"></p>
+
+                <input type="submit" value="Submit" />
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    const modal = document.querySelector("#add-user-modal");
+    const add_user_form = document.querySelector('#add-user-form');
+
+    const userToast = Toastify({
+        text : "User created",
+        duration: 2000
+    });
+
+    function closeModal() {
+        modal.style.display = "none";
+    }
+    function openModal() {
+        modal.style.display = "block";
+    }
+
+    add_user_form.onsubmit = async function (event){
+        event.preventDefault();
+        let appErrorPara = document.querySelectorAll('p.error');
+
+        appErrorPara.forEach((value, index) => {
+            value.style.display = 'none';
+            value.innerHTML = '';
+        });
+
+        let formData = new FormData(add_user_form);
+
+        let response = await fetch('/users' , {
+            method: 'POST',
+            body: formData
+        });
+        let result = await response.json();
+
+        if( result.errors ){
+            let err = result.errors;
+            Object.keys(result.errors).forEach((fieldName) => {
+                let errorField = document.getElementsByClassName(fieldName + '-error');
+
+                if (  errorField !== undefined ) {
+                    add_user_form[fieldName].classList.add('error');
+                    errorField[0].style.display = "block"
+                    errorField[0].innerHTML = '';
+                    errorField[0].innerHTML = err[fieldName].msg;
+                }
+            });
+        } else {
+            document.querySelector('p.error').style.display = 'none';
+            userToast.showToast();
+            setTimeout(()=>{
+                location.reload();
+            }, 1000);
+        }
+    }
+</script>

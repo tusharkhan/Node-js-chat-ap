@@ -9,22 +9,99 @@
     <div id="login-container">
       <div id="left-column"></div>
       <div id="branding">
-        <img src="./images/logo.png" />
+        <img src="./images/logo.png"/>
         <h1>Login - Chat Application</h1>
       </div>
       <div id="login-form">
-        <form method="post" action="/">
+        <form id="login-form" method="post" action="/login">
           <input
-            type="text"
-            name="username"
-            placeholder="enter mobile or email"
-            value=""
+                  type="text"
+                  name="email"
+                  placeholder="enter email"
+                  value="" id="email"
           />
-          <p class="error show">Error message here</p>
-          <input type="password" name="password" placeholder="enter password" />
-          <input type="submit" value="Login" />
+          <p class="error error-email"></p>
+          <input type="password" id="password" name="password" placeholder="enter password"/>
+          <p class="error error-password"></p>
+          <input type="submit" value="Login"/>
         </form>
       </div>
     </div>
+
+    <script>
+      var loginForm = document.querySelector('#login-form');
+      var email = document.getElementById('email');
+      var password = document.getElementById('password');
+
+
+      loginForm.onsubmit = async function (event) {
+        event.preventDefault();
+
+        console.log(validation(event));
+
+        if (validation(event) === 0) {
+          let email = document.querySelector("#email").value;
+          let password = document.querySelector("#password").value;
+
+          let formData = {
+            email, password
+          };
+
+          let response = await fetch('/login', {
+            method: 'POST',
+            body: JSON.stringify(formData),
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+            }
+          });
+
+          let data = await response.json();
+
+          if (data.error) {
+            if (!data.error.hasOwnProperty('common')) {
+              let error = document.querySelector('.error');
+              error.innerHTML = data.error;
+              error.classList.add('show');
+            } else {
+              Toastify({
+                text: data.error.common.msg,
+                duration: 3000,
+                newWindow: true,
+                close: true,
+                gravity: "top", // `top` or `bottom`
+                position: 'right', // `left`, `center` or `right`
+                backgroundColor: "linear-gradient(to right, #ff6c6c, #f66262)",
+                stopOnFocus: true // Prevents dismissing of toast on hover
+              }).showToast();
+            }
+          } else {
+            console.log(data);
+            window.location = window.location.origin + '/inbox';
+          }
+        }
+
+      };
+
+
+      function validation(event) {
+        let formData = Object.fromEntries(new FormData(event.target));
+        let totalkeys = Object.keys(formData).length;
+        let totalError = 0;
+        for (let formDataKey in formData) {
+          if (formData[formDataKey] === '') {
+            let error = document.querySelector('.error-' + formDataKey);
+            error.innerHTML = ' ';
+            error.innerHTML = 'Please fill out all fields';
+            error.classList.add('show');
+            totalError = 1;
+          }
+        }
+
+        return totalError;
+      }
+
+    </script>
+
   </body>
 </html>

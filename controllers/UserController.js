@@ -22,7 +22,6 @@ async function showUserPage(req, res, next) {
 }
 
 async function createUser(req, res, next){
-    console.log('api')
     let hashedPass = await bcrypt.hash(req.body.password, 10);
     let newUser = null;
 

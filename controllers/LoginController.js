@@ -43,6 +43,14 @@ async function login(req, res, next) {
                     message: "Login Successful",
                     user: userInfo
                 });
+            } else {
+                res.status(404).json({
+                    error: {
+                        common: {
+                            msg: "Invalid credentials"
+                        }
+                    }
+                });
             }
         } else {
             res

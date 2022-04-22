@@ -25,7 +25,7 @@ async function createUser(req, res, next){
     let hashedPass = await bcrypt.hash(req.body.password, 10);
     let newUser = null;
 
-    let {filename} = req.files[0];
+    let {filename} = req.files[0] || {};
 
 
     if( req.files && req.files.length > 0 ){

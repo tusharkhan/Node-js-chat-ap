@@ -9,7 +9,7 @@
     <title>
     <%=title%>
 
-    <% if(loggedInUsers){ %>
+    <% if(loggedInUsers && loggedInUsers.name ){ %>
     | <%- loggedInUsers.name %>
     <% } %>
 

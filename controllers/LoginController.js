@@ -17,8 +17,6 @@ async function login(req, res, next) {
     try {
         let user = await People.findOne({email: req.body.email});
         if (user) {
-            console.log(user);
-
             let validatePassword = await bcrypt.compare(req.body.password, user.password);
 
             if (validatePassword) {
@@ -29,15 +27,14 @@ async function login(req, res, next) {
                     role: "user"
                 }
 
-                let jwtToken = jwt.sign(userInfo, process.env.JWT_SECRET, {expiresIn: 7 * 24 * 60 * 60 * 1000},);
+                let jwtToken = await jwt.sign(userInfo, process.env.JWT_SECRET, {expiresIn: 7 * 24 * 60 * 60 * 1000});
 
-                res.cookie(process.env.COOKIE_SECRET, jwtToken, {
+                res.cookie(process.env.COOKIE_SECRET, {jwtToken, userInfo}, {
                     httpOnly: true,
                     maxAge: 7 * 24 * 60 * 60 * 1000,
                     signed: true
                 });
 
-                res.locals.loggedInUsers = userInfo;
 
                 res.status(200).json({
                     message: "Login Successful",
@@ -78,7 +75,16 @@ async function login(req, res, next) {
 }
 
 
+function logout(req, res, next) {
+    console.log('req.cookies');
+    res.clearCookie(process.env.COOKIE_SECRET);
+
+    res.redirect('/');
+}
+
+
 module.exports = {
     showLoginForm,
-    login
+    login,
+    logout
 }

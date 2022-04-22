@@ -1,0 +1,24 @@
+/**
+ * created by: tushar Khan
+ * email : tushar.khan0122@gmail.com
+ * date : 4/18/2022
+ */
+
+
+function getCookie(req, res) {
+    let coockieObjectLength = Object.keys(req.signedCookies).length;
+    let result = {};
+
+
+    if (coockieObjectLength > 0) {
+        result.token = req.signedCookies[process.env.COOKIE_SECRET];
+        result.loggedInUsers = (res.locals.token) ? res.locals.token.userInfo : {};
+    }
+
+    return result;
+}
+
+
+module.exports = {
+    getCookie
+}

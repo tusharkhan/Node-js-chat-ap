@@ -6,7 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="author" content="Sumit Saha" />
     <meta name="owner" content="learnwithsumit.com" />
-    <title><%=title%></title>
+    <title>
+    <%=title%>
+
+    <% if(loggedInUsers){ %>
+    | <%- loggedInUsers.name %>
+    <% } %>
+
+    </title>
     <link rel="shortcut icon" href="./images/favicon.png" />
     <link rel="stylesheet" href="./stylesheets/toastify.css" />
     <link rel="stylesheet" href="./stylesheets/style.css" />

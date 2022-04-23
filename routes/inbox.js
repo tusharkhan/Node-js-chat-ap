@@ -4,7 +4,7 @@
  * date : 4/8/2022
  */
 
-const { showInboxPage } = require('../controllers/InboxController');
+const {showInboxPage} = require('../controllers/InboxController');
 const decorateHtmlResponse = require('../helpers/DecorteHtmlResponse');
 const express = require('express');
 const {loginAuth} = require("../middleware/user/UserAuth");

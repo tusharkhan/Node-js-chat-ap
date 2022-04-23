@@ -19,7 +19,11 @@
         </div>
       </div>
       <div id="new-message-container">
-        <a href="#">+</a>
+        <div id="addUserButtonMainDIv">
+            <a href="#" >
+              <img src="./images/plus.png" >
+            </a>
+        </div>
       </div>
       <div id="chat-title">
         <span>Sumit</span>
@@ -53,13 +57,46 @@
           <h2>Create New Conversation</h2>
         </div>
         <div class="modal-body">
-          <form>
-            <input type="text" placeholder="Name" />
-            <input type="text" placeholder="Username" />
-            <input type="button" value="Submit" />
+          <form id="selectUserForm">
+            <select class="form-control" id="selectUserOption" name="user_id">
+                    <option value="">Select User</option>
+                    <% users.forEach( function (user) { %>
+                        <option value="<%= user._id %>"><%= user.name %></option>
+                    <% }); %>
+                </select>
           </form>
         </div>
       </div>
     </div>
+
+    <script>
+        var addUserButtonMainDIv = document.getElementById('addUserButtonMainDIv');
+        var addUserButtonMainDIvImage = document.querySelector('#addUserButtonMainDIv > a > img');
+        var modalWrapper = document.querySelector('.modal-wrapper');
+        var closeModal = document.querySelector('.modal-close');
+        var selectUserOption = document.getElementById('selectUserOption');
+
+        selectUserOption.addEventListener('change', function(e){
+            var selectedUserId = e.target.value;
+            console.log(selectedUserId);
+        });
+
+        closeModal.addEventListener('click', function(e) {
+            modalWrapper.classList.remove('show-modal');
+        });
+
+        addUserButtonMainDIv.addEventListener('click', function(e) {
+
+            addUserButtonMainDIvImage.classList.add('zoom-in-zoom-out');
+
+            setTimeout(function(){
+                addUserButtonMainDIvImage.classList.remove('zoom-in-zoom-out');
+            }, 1000);
+
+            modalWrapper.classList.add('show-modal');
+        });
+
+    </script>
+
   </body>
 </html>

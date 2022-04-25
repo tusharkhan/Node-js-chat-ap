@@ -5,20 +5,31 @@
  */
 
 let People = require('../models/Peoples');
+const {getCookie} = require("../helpers/otherHelperFunctions");
 
 function showInboxPage(req, res, next) {
     People.find({}, function (error, result) {
         if (error) {
             return next(error);
         }
+
         res.render('inbox', {
             title: 'Inbox',
-            users: result
+            users: result,
+            loggedInUser: req.user
         });
     });
 }
 
 
+function createConversation(req, res, next) {
+    res.status(200).json({
+        message: req.body
+    });
+}
+
+
 module.exports = {
-    showInboxPage
+    showInboxPage,
+    createConversation
 };

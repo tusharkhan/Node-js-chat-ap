@@ -1,4 +1,5 @@
 <%- include('./layouts/header.ejs') %>
+
   <body>
     <div id="chat-container">
       <div id="search-container">
@@ -45,8 +46,8 @@
         </div>
       </div>
       <div id="chat-form">
-        <img src="./images/attachment.png" alt=Add Attachment"" />
-        <input type="text" placeholder="Type a message" />
+        <img src="./images/attachment.png" alt=Add Attachment=""/>
+        <input type="text" placeholder="Type a message"/>
       </div>
     </div>
 
@@ -59,27 +60,23 @@
         <div class="modal-body">
           <form id="selectUserForm">
             <select class="form-control" id="selectUserOption" name="user_id">
-                    <option value="">Select User</option>
-                    <% users.forEach( function (user) { %>
-                        <option value="<%= user._id %>"><%= user.name %></option>
-                    <% }); %>
-                </select>
+              <option value="">Select User</option>
+              <% users.forEach( function (user) { %>
+                <option value="<%= user._id %>"><%= user.name %></option>
+              <% }); %>
+            </select>
+            <input type="hidden" name="creator" value='<%- loggedInUsers._id %>'>
+
           </form>
         </div>
       </div>
     </div>
 
     <script>
-        var addUserButtonMainDIv = document.getElementById('addUserButtonMainDIv');
-        var addUserButtonMainDIvImage = document.querySelector('#addUserButtonMainDIv > a > img');
-        var modalWrapper = document.querySelector('.modal-wrapper');
+      var addUserButtonMainDIv = document.getElementById('addUserButtonMainDIv');
+      var addUserButtonMainDIvImage = document.querySelector('#addUserButtonMainDIv > a > img');
+      var modalWrapper = document.querySelector('.modal-wrapper');
         var closeModal = document.querySelector('.modal-close');
-        var selectUserOption = document.getElementById('selectUserOption');
-
-        selectUserOption.addEventListener('change', function(e){
-            var selectedUserId = e.target.value;
-            console.log(selectedUserId);
-        });
 
         closeModal.addEventListener('click', function(e) {
             modalWrapper.classList.remove('show-modal');
@@ -87,15 +84,40 @@
 
         addUserButtonMainDIv.addEventListener('click', function(e) {
 
-            addUserButtonMainDIvImage.classList.add('zoom-in-zoom-out');
+          addUserButtonMainDIvImage.classList.add('zoom-in-zoom-out');
 
-            setTimeout(function(){
-                addUserButtonMainDIvImage.classList.remove('zoom-in-zoom-out');
-            }, 1000);
+          setTimeout(function () {
+            addUserButtonMainDIvImage.classList.remove('zoom-in-zoom-out');
+          }, 1000);
 
-            modalWrapper.classList.add('show-modal');
+          modalWrapper.classList.add('show-modal');
         });
 
+    </script>
+
+    <script>
+      var selectUserOption = document.getElementById('selectUserOption');
+
+      selectUserOption.addEventListener('change', function (e) {
+        var selectedUserId = e.target.value;
+        let url = '/inbox/create/conversation';
+        let loggedInUserID = '<%= loggedInUser.id %>';
+
+        let postData = {
+          creator: loggedInUserID,
+          participant: selectedUserId
+        };
+
+        fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+          , body: JSON.stringify(postData)
+        }).then(response => response.json())
+                .then(data => console.log(data, loggedInUserID, loggedInUserName))
+                .catch((error) => console.error('Error:', error));
+      });
     </script>
 
   </body>

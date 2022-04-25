@@ -12,8 +12,7 @@ function loginAuth(req, res, next) {
     if (cookieInfo.token) {
 
         try {
-            req.user = jwt.verify(cookieInfo.token, process.env.JWT_SECRET);
-            console.log('user', req.user);
+            req.user = cookieInfo.loggedInUsers;
         } catch (e) {
             console.log(e);
         }

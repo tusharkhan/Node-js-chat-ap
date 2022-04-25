@@ -11,8 +11,10 @@ function getCookie(req, res) {
 
 
     if (coockieObjectLength > 0) {
-        result.token = req.signedCookies[process.env.COOKIE_SECRET];
-        result.loggedInUsers = (res.locals.token) ? res.locals.token.userInfo : {};
+        let cookieData = req.signedCookies[process.env.COOKIE_SECRET];
+
+        result.token = cookieData.jwtToken;
+        result.loggedInUsers = (cookieData) ? cookieData.userInfo : {};
     }
 
     return result;

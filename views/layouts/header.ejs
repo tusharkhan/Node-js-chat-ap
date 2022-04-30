@@ -14,17 +14,26 @@
     <% } %>
 
     </title>
-    <link rel="shortcut icon" href="./images/favicon.png" />
-    <link rel="stylesheet" href="./stylesheets/toastify.css" />
-    <link rel="stylesheet" href="./stylesheets/style.css" />
+    <link rel="shortcut icon" href="./images/favicon.png"/>
+    <link rel="stylesheet" href="./stylesheets/toastify.css"/>
+    <link rel="stylesheet" href="./stylesheets/style.css"/>
     <script src="./js/toastify.js"></script>
 </head>
 
 <body>
 
+<div id="progress_bar_div">
+    <div class='progress' id="progress_div">
+        <div class='bar' id='bar1'></div>
+        <div class='percent' id='percent1'></div>
+    </div>
+
+    <input type="hidden" id="progress_width" value="0">
+</div>
+
 <div class="menu">
 
-    <% if(token) { %>
+    <% if(token && Object.keys(token).length > 0 ) { %>
     <div class="menu-item"><a href="/inbox">Inbox</a></div>
         <div class="menu-item"><a href="/users">Users</a></div>
         <div class="menu-item"><a href="/logout">Logout</a></div>

@@ -1,0 +1,27 @@
+<div class="modal-wrapper" id="add-user-modal">
+    <div class="modal">
+        <a href="#" onclick="closeModal()" class="modal-close">+</a>
+        <div class="modal-title">
+            <h2>Send Message</h2>
+        </div>
+        <div class="modal-body">
+            <form id="add-user-form" method="post"  action="/users">
+
+                <div class="form-group">
+                    <label for="user-name">Select User</label>
+                    <select class="form-control" name="user_id">
+                        <option value="">Select User</option>
+                        <% users.forEach( function (user) { %>
+                            <option value="<%= user._id %>"><%= user.name %></option>
+                        <% }); %>
+                    </select>
+
+                </div>
+
+                <p class="error avatar-error"></p>
+
+                <input type="submit" value="Submit" />
+            </form>
+        </div>
+    </div>
+</div>

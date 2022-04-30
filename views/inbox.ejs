@@ -9,7 +9,7 @@
 
     <% conversations.forEach( function (conversation) { %>
       <% if( conversation.creator.id === loggedInUser.id ) { %>
-        <div class="conversation">
+        <div class="conversation" onclick="getConversationList('<%= conversation._id %>')">
           <% if( conversation.participant.avatar ) { %>
             <img src="./uploads/avatars/<%= conversation.participant.avatar %>"
                  alt="<%= conversation.participant.name %>"/>
@@ -18,18 +18,15 @@
           <% } %>
           <div class="title-text"><%= conversation.participant.name %></div>
 
-          <div class="conversation-message">This is a message</div>
+          <div class="conversation-message created-date"><%= conversation.last_update %></div>
         </div>
-        <div class="created-date"> <%= conversation.last_update %> </div>
       <% } else { %>
-        <div class="conversation">
+        <div class="conversation" onclick="getConversationList('<%= conversation._id %>')">
           <img src="./images/user1.png" alt="Sumit"/>
           <div class="title-text"><%= conversation.creator.name %></div>
 
-          <div class="conversation-message">This is a message</div>
+          <div class="conversation-message created-date"><%= conversation.last_update %></div>
         </div>
-
-        <div class="created-date"> <%= conversation.last_update %> </div>
 
       <% } %>
     <% } ) %>
@@ -150,6 +147,43 @@
     created_date.innerHTML = date.toLocaleDateString("en-US", options);
   }
 
+</script>
+
+
+<script>
+  async function getConversationList(conversation_id) {
+    let url = '/inbox/getConversationList';
+    let postData = {
+      conversation_id: conversation_id
+    };
+
+    let response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(postData)
+    });
+
+    let responseJson = await response.json();
+
+    if (responseJson.error) {
+      Toastify({
+        text: 'Something went wrong',
+        duration: 3000,
+        newWindow: true,
+        close: true,
+        gravity: "top", // `top` or `bottom`
+        position: 'right', // `left`, `center` or `right`
+        backgroundColor: "linear-gradient(to right, #ff6c6c, #f66262)",
+        stopOnFocus: true // Prevents dismissing of toast on hover
+      }).showToast();
+    } else {
+      console.log(responseJson);
+    }
+
+  }
 </script>
 
 </body>

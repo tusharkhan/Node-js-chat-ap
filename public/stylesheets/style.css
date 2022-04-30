@@ -284,14 +284,6 @@ input[type="submit"]:active {
   text-overflow: ellipsis;
 }
 
-.created-date {
-  display: block;
-  color: #ddd;
-  font-size: 1.3rem;
-  border-bottom: 2px solid var(--dark);
-  padding-left: 65px;
-}
-
 
 .conversation-message {
   grid-column: span 2;

@@ -84,7 +84,20 @@ function createConversation(req, res, next) {
 }
 
 
+async function getUserConversationList(req, res, next) {
+    let conversation_id = req.body.conversation_id;
+
+    console.log(req.body);
+
+    res.status(200).json({
+        message: 'Conversation List',
+        conversation_id: conversation_id ?? null
+    });
+}
+
+
 module.exports = {
     showInboxPage,
-    createConversation
+    createConversation,
+    getUserConversationList
 };

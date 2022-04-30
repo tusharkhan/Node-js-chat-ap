@@ -22,16 +22,18 @@
       </div>
     </div>
 
-    <script>
-      var loginForm = document.querySelector('#login-form');
-      var email = document.getElementById('email');
-      var password = document.getElementById('password');
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="./js/progress.js" type="text/javascript"></script>
+
+<script>
+  var loginForm = document.querySelector('#login-form');
+  var email = document.getElementById('email');
+  var password = document.getElementById('password');
 
 
-      loginForm.onsubmit = async function (event) {
-        event.preventDefault();
-
-        console.log(validation(event));
+  loginForm.onsubmit = async function (event) {
+    event.preventDefault();
 
         if (validation(event) === 0) {
           let email = document.querySelector("#email").value;

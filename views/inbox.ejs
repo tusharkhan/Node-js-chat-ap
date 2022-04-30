@@ -1,33 +1,48 @@
 <%- include('./layouts/header.ejs') %>
 
-  <body>
-    <div id="chat-container">
-      <div id="search-container">
-        <input type="text" placeholder="Search" />
-      </div>
-      <div id="conversation-list">
-        <div class="conversation active">
-          <img src="./images/user1.png" alt="Sumit" />
-          <div class="title-text">Sumit Saha</div>
-          <di class="created-date"> Apr 16 </di>
-          <div class="conversation-message">This is a message</div>
-        </div>
+<body>
+<div id="chat-container">
+  <div id="search-container">
+    <input type="text" placeholder="Search"/>
+  </div>
+  <div id="conversation-list">
+
+    <% conversations.forEach( function (conversation) { %>
+      <% if( conversation.creator.id === loggedInUser.id ) { %>
         <div class="conversation">
-          <img src="./images/user2.png" alt="Sumit" />
-          <div class="title-text">Sumit Saha</div>
-          <di class="created-date"> Apr 16 </di>
+          <% if( conversation.participant.avatar ) { %>
+            <img src="./uploads/avatars/<%= conversation.participant.avatar %>"
+                 alt="<%= conversation.participant.name %>"/>
+          <% } else { %>
+            <img src="./images/user2.png" alt="<%= conversation.participant.name %>"/>
+          <% } %>
+          <div class="title-text"><%= conversation.participant.name %></div>
+
           <div class="conversation-message">This is a message</div>
         </div>
-      </div>
-      <div id="new-message-container">
-        <div id="addUserButtonMainDIv">
-            <a href="#" >
-              <img src="./images/plus.png" >
-            </a>
+        <div class="created-date"> <%= conversation.last_update %> </div>
+      <% } else { %>
+        <div class="conversation">
+          <img src="./images/user1.png" alt="Sumit"/>
+          <div class="title-text"><%= conversation.creator.name %></div>
+
+          <div class="conversation-message">This is a message</div>
         </div>
-      </div>
-      <div id="chat-title">
-        <span>Sumit</span>
+
+        <div class="created-date"> <%= conversation.last_update %> </div>
+
+      <% } %>
+    <% } ) %>
+  </div>
+  <div id="new-message-container">
+    <div id="addUserButtonMainDIv">
+      <a href="#">
+        <img src="./images/plus.png">
+      </a>
+    </div>
+  </div>
+  <div id="chat-title">
+    <span>Sumit</span>
         <img src="./images/trash.png" alt="Delete Conversation" />
       </div>
       <div id="chat-message-list">
@@ -72,15 +87,18 @@
       </div>
     </div>
 
-    <script>
-      var addUserButtonMainDIv = document.getElementById('addUserButtonMainDIv');
-      var addUserButtonMainDIvImage = document.querySelector('#addUserButtonMainDIv > a > img');
-      var modalWrapper = document.querySelector('.modal-wrapper');
-        var closeModal = document.querySelector('.modal-close');
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="./js/progress.js" type="text/javascript"></script>
 
-        closeModal.addEventListener('click', function(e) {
-            modalWrapper.classList.remove('show-modal');
-        });
+<script>
+  var addUserButtonMainDIv = document.getElementById('addUserButtonMainDIv');
+  var addUserButtonMainDIvImage = document.querySelector('#addUserButtonMainDIv > a > img');
+  var modalWrapper = document.querySelector('.modal-wrapper');
+  var closeModal = document.querySelector('.modal-close');
+
+  closeModal.addEventListener('click', function (e) {
+    modalWrapper.classList.remove('show-modal');
+  });
 
         addUserButtonMainDIv.addEventListener('click', function(e) {
 
@@ -93,32 +111,46 @@
           modalWrapper.classList.add('show-modal');
         });
 
-    </script>
+</script>
 
-    <script>
-      var selectUserOption = document.getElementById('selectUserOption');
+<script>
 
-      selectUserOption.addEventListener('change', function (e) {
-        var selectedUserId = e.target.value;
-        let url = '/inbox/create/conversation';
-        let loggedInUserID = '<%= loggedInUser.id %>';
+  convertDate();
+
+  var selectUserOption = document.getElementById('selectUserOption');
+
+  selectUserOption.addEventListener('change', function (e) {
+    var selectedUserId = e.target.value;
+    let url = '/inbox/create/conversation';
+    let loggedInUserID = '<%= loggedInUser.id %>';
 
         let postData = {
           creator: loggedInUserID,
           participant: selectedUserId
         };
 
-        fetch(url, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          }
-          , body: JSON.stringify(postData)
-        }).then(response => response.json())
-                .then(data => console.log(data, loggedInUserID, loggedInUserName))
-                .catch((error) => console.error('Error:', error));
-      });
-    </script>
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+      , body: JSON.stringify(postData)
+    }).then(response => response.json())
+            .then(data => console.log(data, loggedInUserID, loggedInUserName))
+            .catch((error) => console.error('Error:', error));
+  });
 
-  </body>
+  function convertDate() {
+    let created_date = document.querySelector('.created-date');
+    let date = new Date(created_date.innerHTML);
+    let options = {
+      weekday: "long", year: "numeric", month: "short",
+      day: "numeric", hour: "2-digit", minute: "2-digit"
+    };
+    created_date.innerHTML = date.toLocaleDateString("en-US", options);
+  }
+
+</script>
+
+</body>
 </html>

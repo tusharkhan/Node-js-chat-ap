@@ -21,6 +21,12 @@ function getCookie(req, res) {
 }
 
 
-module.exports = {
-    getCookie
+function convertDate(date) {
+    return new Date(date).toISOString().slice(0, 10);
 }
+
+
+module.exports = {
+    getCookie,
+    convertDate
+};

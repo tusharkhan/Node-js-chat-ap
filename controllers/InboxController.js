@@ -7,6 +7,7 @@
 const People = require('../models/Peoples');
 const mongoose = require('mongoose');
 const Conversation = require('../models/Conversation');
+const Message = require('../models/Message');
 
 function showInboxPage(req, res, next) {
     People.find({_id: {$ne: req.user.id}}, function (error, result) {
@@ -96,7 +97,54 @@ async function getUserConversationList(req, res, next) {
 }
 
 
+async function sendMessage(req, res, next) {
+    let sender_id = req.body.sender_id;
+    let receiver_id = req.body.receiver_id;
+    let conversation_id = req.body.conversation_id;
+    let messageText = req.body.message;
+
+    let senderInfo = await People.findById(sender_id);
+    let receiverInfo = await People.findById(receiver_id);
+    let conversation = await Conversation.findById(conversation_id);
+
+    if (!senderInfo || !receiverInfo || !conversation) {
+        res.status(500).json({
+            message: 'Internal Server Error'
+        });
+    } else {
+        let message = new Message({
+            conversation_id: conversation._id,
+            sender: {
+                id: senderInfo._id,
+                name: senderInfo.name,
+                avatar: senderInfo.avatar
+            },
+            receiver: {
+                id: receiverInfo._id,
+                name: receiverInfo.name,
+                avatar: receiverInfo.avatar
+            },
+            text: messageText
+        });
+
+        message.save(function (saveError, saveData) {
+            if (saveError) {
+                res.status(500).json({
+                    message: 'Internal Server Error'
+                });
+            } else {
+                res.status(200).json({
+                    message: 'Message Sent',
+                    data: saveData
+                });
+            }
+        });
+    }
+}
+
+
 module.exports = {
+    sendMessage,
     showInboxPage,
     createConversation,
     getUserConversationList

@@ -20,6 +20,7 @@ var textInputField = document.getElementById('textInputField');
 var loggedInUserId = document.getElementById('loggedInUserId');
 var participantUserId = document.getElementById('participantUserId');
 var conversationId = document.getElementById('conversationId');
+var socket = io('http://localhost:3000');
 
 // close modal
 closeModal.addEventListener('click', function (e) {
@@ -178,6 +179,15 @@ textInputField.addEventListener("keydown", async function (event) {
 
         }
 
+    }
+});
+
+
+socket.on('send_message', function (emmitData) {
+    console.log(emmitData, emmitData.sender.id, loggedInUserId.value)
+    if (emmitData.sender.id !== loggedInUserId.value) {
+        chatMessageList.appendChild(createReceiverDiv(emmitData));
+        console.log('message received');
     }
 });
 

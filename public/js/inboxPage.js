@@ -71,6 +71,7 @@ function convertDate() {
 
 // get user all conversation list
 async function getConversationList(reference, conversation_id, participant_id) {
+    chatMessageList.innerHTML = '';
     participantUserId.value = participant_id;
     conversationId.value = conversation_id;
     let url = '/inbox/getConversationList';
@@ -104,13 +105,22 @@ async function getConversationList(reference, conversation_id, participant_id) {
             stopOnFocus: true // Prevents dismissing of toast on hover
         }).showToast();
     } else {
-        console.log(responseJson);
+        let conversatyions = responseJson.conversations;
+
+        for (let conversatyionsKey in conversatyions) {
+            let conversationInfo = conversatyions[conversatyionsKey];
+
+            if (conversationInfo.sender.id === loggedInUserId.value) {
+                chatMessageList.append(createSenderDiv(conversationInfo));
+            } else {
+                chatMessageList.append(createReceiverDiv(conversationInfo));
+            }
+        }
     }
 }
 
 
 // send message
-
 textInputField.addEventListener("keydown", async function (event) {
     if (event.key === "Enter") {
         let text = $(this).val();
@@ -119,7 +129,7 @@ textInputField.addEventListener("keydown", async function (event) {
         let conversationID = conversationId.value;
         let url = '/inbox/sendMessage';
 
-        if (participantUserID && (participantUserID !== loggedInUserID)) {
+        if (participantUserID) {
             let postData = {
                 conversation_id: conversationID,
                 sender_id: loggedInUserID,
@@ -135,6 +145,25 @@ textInputField.addEventListener("keydown", async function (event) {
                 }
                 , body: JSON.stringify(postData)
             });
+
+            let responseJson = await response.json();
+
+            if (responseJson.error) {
+                Toastify({
+                    text: 'Something went wrong',
+                    duration: 3000,
+                    newWindow: true,
+                    close: true,
+                    gravity: "top", // `top` or `bottom`
+                    position: 'right', // `left`, `center` or `right`
+                    backgroundColor: "linear-gradient(to right, #ff6c6c, #f66262)",
+                    stopOnFocus: true // Prevents dismissing of toast on hover
+                }).showToast();
+            } else {
+                let conversatyions = responseJson.data;
+                chatMessageList.appendChild(createSenderDiv(conversatyions))
+                $(this).val('');
+            }
         }
 
     }
@@ -158,5 +187,57 @@ function clickedUserInfo(reference) {
     chatTitleImage.style.display = 'block';
 }
 
+function conversationDateFormat(dateToConvert) {
+    let date = new Date(dateToConvert);
+    return date.toLocaleDateString("en-US", {
+        weekday: "long", hour: "2-digit", minute: "2-digit"
+    });
+}
+
+
+function createSenderDiv(senderData) {
+    let senderDiv = createElement('div', 'message-row you-message');
+    let messageText = createElement('div', 'message-text', senderData.text);
+    let messageTime = createElement('div', 'message-time', conversationDateFormat(senderData.created_at));
+    let messageContent = createElement('div', 'message-content');
+
+    messageContent.appendChild(messageText);
+    messageContent.appendChild(messageTime);
+    senderDiv.appendChild(messageContent);
+
+    return senderDiv;
+}
+
+
+function createReceiverDiv(receiverData) {
+    let senderDiv = createElement('div', 'message-row other-message');
+    let messageText = createElement('div', 'message-text', receiverData.text);
+    let messageTime = createElement('div', 'message-time', conversationDateFormat(receiverData.created_at));
+    let messageContent = createElement('div', 'message-content');
+    let participantImage = createElement('img');
+
+    if (receiverData.avatar) {
+        participantImage.src = ('./uploads/avatars/' + receiverData.avatar);
+    } else {
+        participantImage.src = './images/nophoto.png';
+    }
+
+    messageContent.appendChild(participantImage);
+    messageContent.appendChild(messageText);
+    messageContent.appendChild(messageTime);
+    senderDiv.appendChild(messageContent);
+
+    return senderDiv;
+}
+
+
+function createElement(element, className, innerHTML = null) {
+    let elementToCreate = document.createElement(element);
+    elementToCreate.className = className;
+    if (innerHTML != null) {
+        elementToCreate.innerHTML = innerHTML;
+    }
+    return elementToCreate;
+}
 
 init();

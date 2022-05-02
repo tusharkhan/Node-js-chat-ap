@@ -4,7 +4,9 @@
  * date : 5/1/2022
  */
 
+
 // important variables
+
 var addUserButtonMainDIv = document.getElementById('addUserButtonMainDIv');
 var addUserButtonMainDIvImage = document.querySelector('#addUserButtonMainDIv > a > img');
 var modalWrapper = document.querySelector('.modal-wrapper');
@@ -19,12 +21,10 @@ var loggedInUserId = document.getElementById('loggedInUserId');
 var participantUserId = document.getElementById('participantUserId');
 var conversationId = document.getElementById('conversationId');
 
-
 // close modal
 closeModal.addEventListener('click', function (e) {
     modalWrapper.classList.remove('show-modal');
 });
-
 
 // add user button animation
 addUserButtonMainDIv.addEventListener('click', function (e) {
@@ -37,7 +37,6 @@ addUserButtonMainDIv.addEventListener('click', function (e) {
 
     modalWrapper.classList.add('show-modal');
 });
-
 
 // select user and ajx post
 selectUserOption.addEventListener('change', function (e) {
@@ -62,6 +61,7 @@ selectUserOption.addEventListener('change', function (e) {
 });
 
 
+
 // to convert date format
 function convertDate() {
     let created_date = document.querySelector('.created-date');
@@ -77,6 +77,7 @@ function convertDate() {
 // get user all conversation list
 async function getConversationList(reference, conversation_id, participant_id) {
     chatMessageList.innerHTML = '';
+
     participantUserId.value = participant_id;
     conversationId.value = conversation_id;
     let url = '/inbox/getConversationList';
@@ -110,6 +111,7 @@ async function getConversationList(reference, conversation_id, participant_id) {
             stopOnFocus: true // Prevents dismissing of toast on hover
         }).showToast();
     } else {
+
         let conversatyions = responseJson.conversations;
 
         for (let conversatyionsKey in conversatyions) {
@@ -135,7 +137,9 @@ textInputField.addEventListener("keydown", async function (event) {
         let conversationID = conversationId.value;
         let url = '/inbox/sendMessage';
 
+
         if (participantUserID) {
+
             let postData = {
                 conversation_id: conversationID,
                 sender_id: loggedInUserID,
@@ -151,6 +155,7 @@ textInputField.addEventListener("keydown", async function (event) {
                 }
                 , body: JSON.stringify(postData)
             });
+
 
             let responseJson = await response.json();
 
@@ -170,6 +175,7 @@ textInputField.addEventListener("keydown", async function (event) {
                 chatMessageList.appendChild(createSenderDiv(conversatyions))
                 $(this).val('');
             }
+
         }
 
     }
@@ -192,6 +198,7 @@ function clickedUserInfo(reference) {
     chatTitleSpan.innerHTML = userTitle.innerHTML;
     chatTitleImage.style.display = 'block';
 }
+
 
 function conversationDateFormat(dateToConvert) {
     let date = new Date(dateToConvert);
@@ -246,5 +253,6 @@ function createElement(element, className, innerHTML = null) {
     }
     return elementToCreate;
 }
+
 
 init();

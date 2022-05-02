@@ -4,7 +4,7 @@
  * date : 5/1/2022
  */
 
-
+// important variables
 var addUserButtonMainDIv = document.getElementById('addUserButtonMainDIv');
 var addUserButtonMainDIvImage = document.querySelector('#addUserButtonMainDIv > a > img');
 var modalWrapper = document.querySelector('.modal-wrapper');
@@ -19,10 +19,12 @@ var loggedInUserId = document.getElementById('loggedInUserId');
 var participantUserId = document.getElementById('participantUserId');
 var conversationId = document.getElementById('conversationId');
 
+
 // close modal
 closeModal.addEventListener('click', function (e) {
     modalWrapper.classList.remove('show-modal');
 });
+
 
 // add user button animation
 addUserButtonMainDIv.addEventListener('click', function (e) {
@@ -35,6 +37,7 @@ addUserButtonMainDIv.addEventListener('click', function (e) {
 
     modalWrapper.classList.add('show-modal');
 });
+
 
 // select user and ajx post
 selectUserOption.addEventListener('change', function (e) {
@@ -58,6 +61,7 @@ selectUserOption.addEventListener('change', function (e) {
         .catch((error) => console.error('Error:', error));
 });
 
+
 // to convert date format
 function convertDate() {
     let created_date = document.querySelector('.created-date');
@@ -68,6 +72,7 @@ function convertDate() {
     };
     created_date.innerHTML = date.toLocaleDateString("en-US", options);
 }
+
 
 // get user all conversation list
 async function getConversationList(reference, conversation_id, participant_id) {
@@ -121,6 +126,7 @@ async function getConversationList(reference, conversation_id, participant_id) {
 
 
 // send message
+
 textInputField.addEventListener("keydown", async function (event) {
     if (event.key === "Enter") {
         let text = $(this).val();

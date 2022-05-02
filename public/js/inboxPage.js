@@ -215,9 +215,10 @@ function createReceiverDiv(receiverData) {
     let messageTime = createElement('div', 'message-time', conversationDateFormat(receiverData.created_at));
     let messageContent = createElement('div', 'message-content');
     let participantImage = createElement('img');
-
-    if (receiverData.avatar) {
-        participantImage.src = ('./uploads/avatars/' + receiverData.avatar);
+    console.log(receiverData)
+    if (receiverData.receiver.avatar) {
+        participantImage.src = ('./uploads/avatars/' + receiverData.receiver.avatar);
+        participantImage.alt = receiverData.receiver.name;
     } else {
         participantImage.src = './images/nophoto.png';
     }

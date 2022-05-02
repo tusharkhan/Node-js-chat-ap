@@ -135,6 +135,22 @@ async function sendMessage(req, res, next) {
                     message: 'Internal Server Error'
                 });
             } else {
+                global.io.emit('send_message', {
+                    conversation_id: conversation._id,
+                    sender: {
+                        id: senderInfo._id,
+                        name: senderInfo.name,
+                        avatar: senderInfo.avatar
+                    },
+                    receiver: {
+                        id: receiverInfo._id,
+                        name: receiverInfo.name,
+                        avatar: receiverInfo.avatar
+                    },
+                    text: messageText,
+                    created_at: new Date().toISOString()
+                });
+
                 res.status(200).json({
                     message: 'Message Sent',
                     data: saveData

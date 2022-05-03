@@ -26,8 +26,13 @@ const Schema = mongoose.Schema({
         type: String,
         required: true,
     },
-    attachment: {
-        type: String,
+    isReadBySender: {
+        type: Boolean,
+        default: true
+    },
+    isReadByReceiver: {
+        type: Boolean,
+        default: false
     },
     created_at: {
         type: Date,

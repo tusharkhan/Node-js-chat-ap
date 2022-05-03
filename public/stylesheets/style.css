@@ -250,7 +250,7 @@ input[type="submit"]:active {
 
 .conversation {
   display: grid;
-  grid-template-columns: 40px 1fr max-content;
+  grid-template-columns: 63px 1fr max-content;
   grid-gap: 10px;
   color: #ddd;
   font-size: 1.3rem;
@@ -267,7 +267,7 @@ input[type="submit"]:active {
   cursor: pointer;
 }
 
-.conversation > img {
+.user-image > img {
   grid-row: span 2;
   width: 40px;
   height: 40px;
@@ -760,13 +760,36 @@ input[type="submit"]:active {
 }
 
 #wrapper {
-    width: 995px;
-    padding: 0px;
-    margin: 0px auto;
-    font-family: helvetica;
-    text-align: center;
+  width: 995px;
+  padding: 0px;
+  margin: 0px auto;
+  font-family: helvetica;
+  text-align: center;
 }
 
 #textInputField {
-    color: #ffffff;
+  color: #ffffff;
+}
+
+.badge {
+  box-sizing: border-box;
+  display: inline-block;
+  background-color: #2c3e50;
+  color: #ffffff;
+  border-radius: 3rem;
+  text-align: center;
+  font-size: 1.6rem;
+  font-weight: 400;
+  padding: 0.05rem 0.8rem 0.1rem;
+  line-height: inherit;
+}
+
+.badge--smaller {
+  font-size: 0.7rem;
+  padding: 0.05rem 0.4rem 0.15rem;
+}
+
+
+.badge--info {
+  background-color: #3498db;
 }

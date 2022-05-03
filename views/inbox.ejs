@@ -24,9 +24,11 @@
       <% } else { %>
         <div class="conversation"
              onclick="getConversationList(this, '<%= conversation._id %>', '<%= conversation.participant.id %>')">
-          <img src="./images/user1.png" alt="Sumit"/>
+          <div class="user-image">
+            <span class="badge badge--smaller badge--info">8</span>
+            <img src="./images/user1.png" alt="Sumit"/>
+          </div>
           <div class="title-text"><%= conversation.creator.name %></div>
-
           <div class="conversation-message created-date"><%= conversation.last_update %></div>
         </div>
 
@@ -51,7 +53,6 @@
 
 
   <div id="chat-form">
-    <img src="./images/attachment.png" alt=Add Attachment=""/>
     <input type="text" placeholder="Type a message" id="textInputField"/>
     <input type="hidden" value="<%= loggedInUser.id %>" id="loggedInUserId">
     <input type="hidden" value="" id="participantUserId">

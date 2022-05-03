@@ -124,6 +124,7 @@ async function getConversationList(reference, conversation_id, participant_id) {
                 chatMessageList.append(createReceiverDiv(conversationInfo));
             }
         }
+        scrollToBottom(chatMessageList);
     }
 }
 
@@ -175,6 +176,7 @@ textInputField.addEventListener("keydown", async function (event) {
                 let conversatyions = responseJson.data;
                 chatMessageList.appendChild(createSenderDiv(conversatyions))
                 $(this).val('');
+                scrollToBottom(chatMessageList);
             }
 
         }
@@ -187,7 +189,7 @@ socket.on('send_message', function (emmitData) {
     console.log(emmitData, emmitData.sender.id, loggedInUserId.value)
     if (emmitData.sender.id !== loggedInUserId.value) {
         chatMessageList.appendChild(createReceiverDiv(emmitData));
-        console.log('message received');
+        scrollToBottom(chatMessageList);
     }
 });
 
@@ -264,5 +266,9 @@ function createElement(element, className, innerHTML = null) {
     return elementToCreate;
 }
 
+
+function scrollToBottom(node) {
+    node.scrollTop = node.scrollHeight;
+}
 
 init();

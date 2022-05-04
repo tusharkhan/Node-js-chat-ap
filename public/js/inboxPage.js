@@ -158,6 +158,11 @@ async function getConversationList(reference, conversation_id, participant_id) {
             stopOnFocus: true // Prevents dismissing of toast on hover
         }).showToast();
     } else {
+        let badge = $('#badg-' + conversation_id);
+
+        badge.innerText = 0;
+        badge.hide();
+
 
         let conversatyions = responseJson.conversations;
 
@@ -232,12 +237,39 @@ textInputField.addEventListener("keydown", async function (event) {
 
 
 socket.on('send_message', function (emmitData) {
-    console.log(emmitData, emmitData.sender.id, loggedInUserId.value)
+
     if (emmitData.sender.id !== loggedInUserId.value) {
-        chatMessageList.appendChild(createReceiverDiv(emmitData));
-        scrollToBottom(chatMessageList);
+
+        updateMessageList(emmitData.conversation_id);
+
+        if (conversationId.value.length > 0) {
+            chatMessageList.appendChild(createReceiverDiv(emmitData));
+            scrollToBottom(chatMessageList);
+        }
+
+
     }
 });
+
+
+// update message list
+function updateMessageList(conversation_id) {
+    let getConversationDiv = document.querySelector(`[data-conversationId="${conversation_id}"]`);
+    if (getConversationDiv) {
+        if (conversation_id != conversationId.value) {
+            let badge = $('#badg-' + conversation_id);
+
+            if (badge.is(':visible')) {
+                let currentBadge = parseInt(badge.text());
+                badge.text(currentBadge + 1);
+            } else {
+                badge.show();
+                badge.innerText = 1;
+            }
+        }
+    }
+
+}
 
 
 // inbox page init function

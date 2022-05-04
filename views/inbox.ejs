@@ -9,27 +9,32 @@
 
     <% conversations.forEach( function (conversation) { %>
       <% if( conversation.creator.id == loggedInUser.id ) { %>
-        <div class="conversation"
+        <div class="conversation" data-conversationId="<%= conversation.id %>"
              onclick="getConversationList(this, '<%= conversation._id %>', '<%= conversation.creator.id %>')">
-          <% if( conversation.participant.avatar ) { %>
-            <img src="./uploads/avatars/<%= conversation.participant.avatar %>"
-                 alt="<%= conversation.participant.name %>"/>
-          <% } else { %>
-            <img src="./images/user1.png" style="    grid-row: span 2;
+          <div class="user-image">
+            <span id="badg-<%= conversation.id %>" style="display: none"
+                  class="badge badge--smaller badge--info">1</span>
+            <% if( conversation.participant.avatar ) { %>
+              <img src="./uploads/avatars/<%= conversation.participant.avatar %>"
+                   alt="<%= conversation.participant.name %>"/>
+            <% } else { %>
+              <img src="./images/user1.png" style="    grid-row: span 2;
     width: 40px;
     height: 40px;
     border-radius: 100%;
     border: 2px solid var(--blue);" alt="<%= conversation.participant.name %>"/>
-          <% } %>
+            <% } %>
+          </div>
           <div class="title-text"><%= conversation.participant.name %></div>
 
           <div class="conversation-message created-date"><%= conversation.last_update %></div>
         </div>
       <% } else { %>
-        <div class="conversation"
+        <div class="conversation" data-conversationId="<%= conversation.id %>"
              onclick="getConversationList(this, '<%= conversation._id %>', '<%= conversation.participant.id %>')">
           <div class="user-image">
-            <span class="badge badge--smaller badge--info">8</span>
+            <span id="badg-<%= conversation.id %>" style="display: none"
+                  class="badge badge--smaller badge--info">1</span>
             <% if( conversation.creator.avatar ) { %>
               <img src="./uploads/avatars/<%= conversation.creator.avatar %>"
                    alt="<%= conversation.creator.name %>"/>

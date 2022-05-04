@@ -415,25 +415,26 @@ input[type="submit"]:active {
 }
 
 #chat-form {
-    display: grid;
-    grid: 51px / 32px 1fr;
-    align-content: center;
-    align-items: center;
-    grid-gap: 15px;
-    grid-area: chat-form;
-    border-radius: 0 0 10px 0;
-    border-top: 2px solid rgba(0, 0, 0, 0.25);
-    padding: 12px 22px 11px 10px;
+  /*display: grid;*/
+  /*grid: 51px / 32px 1fr;*/
+  align-content: center;
+  align-items: center;
+  grid-gap: 15px;
+  grid-area: chat-form;
+  border-radius: 0 0 10px 0;
+  border-top: 2px solid rgba(0, 0, 0, 0.25);
+  padding: 12px 22px 11px 10px;
 
 }
 
 #chat-form input {
-    background: var(--primary);
-    outline: none;
-    padding: 15px;
-    border: 2px solid var(--light);
-    border-radius: 6px;
-    font-size: 1.4rem;
+  width: 100%;
+  background: var(--primary);
+  outline: none;
+  padding: 15px;
+  border: 2px solid var(--light);
+  border-radius: 6px;
+  font-size: 1.4rem;
 }
 
 #chat-form img {
@@ -785,7 +786,7 @@ input[type="submit"]:active {
 }
 
 .badge--smaller {
-  font-size: 0.7rem;
+  font-size: 1.7rem;
   padding: 0.05rem 0.4rem 0.15rem;
 }
 

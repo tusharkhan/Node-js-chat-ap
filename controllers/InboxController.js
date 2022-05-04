@@ -44,8 +44,8 @@ function createConversation(req, res, next) {
     //check if conversation exist
     let query = Conversation.find({
         $or: [
-            {"creator.id": creator},
-            {"participant.id": participant},
+            {"creator.id": creator, "participant.id": participant},
+            {"creator.id": participant, "participant.id": creator},
         ]
     }).lean().limit(1);
 

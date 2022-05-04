@@ -20,6 +20,14 @@ const Schema = mongoose.Schema({
             type: Date,
             default: Date.now
         },
+        deleteByCreator: {
+            type: Boolean,
+            default: false
+        },
+        deleteByParticipant: {
+            type: Boolean,
+            default: false
+        },
     },
     {
         timestamps: true

@@ -41,47 +41,77 @@ function createConversation(req, res, next) {
     let creator = mongoose.Types.ObjectId(requestBody.creator);
     let participant = mongoose.Types.ObjectId(requestBody.participant);
 
-    People.findById(creator, function (error, result) {
+    //check if conversation exist
+    let query = Conversation.find({
+        $or: [
+            {"creator.id": creator},
+            {"participant.id": participant},
+        ]
+    }).lean().limit(1);
+
+
+    // Find the document
+    query.exec(function (error, result) {
         if (error) {
             res.status(500).json({
-                message: 'Internal Server Error'
+                message: 'Internal Server Error',
+                error: error
             });
-        } else {
-            People.findById(participant, function (error2, perti) {
-                if (error2) {
+        }
+        // If the document doesn't exist
+        if (!result.length) {
+            // Create a new one
+            People.findById(creator, function (error, result) {
+                if (error) {
                     res.status(500).json({
                         message: 'Internal Server Error'
                     });
                 } else {
-                    let conversation = new Conversation({
-                        creator: {
-                            id: result._id,
-                            name: result.name,
-                            avatar: result.avatar
-                        },
-                        participant: {
-                            id: perti._id,
-                            name: perti.name,
-                            avatar: perti.avatar
-                        }
-                    });
-
-                    conversation.save(function (saveError, saveResult) {
-                        if (saveError) {
+                    People.findById(participant, function (error2, perti) {
+                        if (error2) {
                             res.status(500).json({
                                 message: 'Internal Server Error'
                             });
                         } else {
-                            res.status(200).json({
-                                message: 'Conversation Created',
-                                conversation: saveResult
+                            let conversation = new Conversation({
+                                creator: {
+                                    id: result._id,
+                                    name: result.name,
+                                    avatar: result.avatar
+                                },
+                                participant: {
+                                    id: perti._id,
+                                    name: perti.name,
+                                    avatar: perti.avatar
+                                }
+                            });
+
+                            conversation.save(function (saveError, saveResult) {
+                                if (saveError) {
+                                    res.status(500).json({
+                                        message: 'Internal Server Error'
+                                    });
+                                } else {
+                                    res.status(201).json({
+                                        message: 'Conversation Created',
+                                        conversation: saveResult
+                                    });
+                                }
                             });
                         }
                     });
                 }
             });
         }
+        // If the document does exist
+        else {
+            res.status(200).json({
+                message: 'Conversation Exist',
+                conversation: result[0]
+            });
+        }
     });
+
 }
 
 

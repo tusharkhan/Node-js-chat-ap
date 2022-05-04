@@ -43,7 +43,7 @@ addUserButtonMainDIv.addEventListener('click', function (e) {
 selectUserOption.addEventListener('change', function (e) {
     var selectedUserId = e.target.value;
     let url = '/inbox/create/conversation';
-    let loggedInUserID = '<%= loggedInUser.id %>';
+    let loggedInUserID = loggedInUserId.value;
 
     let postData = {
         creator: loggedInUserID,
@@ -56,9 +56,52 @@ selectUserOption.addEventListener('change', function (e) {
             'Content-Type': 'application/json'
         }
         , body: JSON.stringify(postData)
-    }).then(response => response.json())
-        .then(data => console.log(data, loggedInUserID, loggedInUserName))
-        .catch((error) => console.error('Error:', error));
+    }).then(response => {
+        modalWrapper.classList.remove('show-modal');
+        let mainResponse = response;
+        let jsonResponse = response.json();
+
+        jsonResponse.then(data => {
+            if (mainResponse.status === 200) {
+                Toastify({
+                    text: data.message,
+                    duration: 3000,
+                    newWindow: true,
+                    close: true,
+                    gravity: "top", // `top` or `bottom`
+                    position: 'right', // `left`, `center` or `right`
+                    stopOnFocus: true // Prevents dismissing of toast on hover
+                }).showToast();
+            } else if (mainResponse.status === 201) {
+                Toastify({
+                    text: data.message,
+                    duration: 3000,
+                    newWindow: true,
+                    close: true,
+                    gravity: "top", // `top` or `bottom`
+                    position: 'right', // `left`, `center` or `right`
+                    stopOnFocus: true // Prevents dismissing of toast on hover
+                }).showToast();
+
+                setTimeout(function () {
+                    window.location.reload();
+                }, 3000);
+            }
+        });
+
+    })
+        .catch((error) => {
+            Toastify({
+                text: 'Something went wrong',
+                duration: 3000,
+                newWindow: true,
+                close: true,
+                gravity: "top", // `top` or `bottom`
+                position: 'right', // `left`, `center` or `right`
+                backgroundColor: "linear-gradient(to right, #ff6c6c, #f66262)",
+                stopOnFocus: true // Prevents dismissing of toast on hover
+            }).showToast();
+        });
 });
 
 
@@ -66,12 +109,15 @@ selectUserOption.addEventListener('change', function (e) {
 // to convert date format
 function convertDate() {
     let created_date = document.querySelector('.created-date');
-    let date = new Date(created_date.innerHTML);
-    let options = {
-        weekday: "long", year: "numeric", month: "short",
-        day: "numeric", hour: "2-digit", minute: "2-digit"
-    };
-    created_date.innerHTML = date.toLocaleDateString("en-US", options);
+
+    if (created_date) {
+        let date = new Date(created_date.innerHTML);
+        let options = {
+            weekday: "long", year: "numeric", month: "short",
+            day: "numeric", hour: "2-digit", minute: "2-digit"
+        };
+        created_date.innerHTML = date.toLocaleDateString("en-US", options);
+    }
 }
 
 

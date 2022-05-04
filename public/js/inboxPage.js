@@ -20,6 +20,7 @@ var textInputField = document.getElementById('textInputField');
 var loggedInUserId = document.getElementById('loggedInUserId');
 var participantUserId = document.getElementById('participantUserId');
 var conversationId = document.getElementById('conversationId');
+var conversationList = document.getElementById('conversation-list');
 var socket = io('http://localhost:3000');
 
 // close modal
@@ -105,7 +106,6 @@ selectUserOption.addEventListener('change', function (e) {
 });
 
 
-
 // to convert date format
 function convertDate() {
     let created_date = document.querySelector('.created-date');
@@ -158,6 +158,11 @@ async function getConversationList(reference, conversation_id, participant_id) {
             stopOnFocus: true // Prevents dismissing of toast on hover
         }).showToast();
     } else {
+        let badge = $('#badg-' + conversation_id);
+
+        badge.innerText = 0;
+        badge.hide();
+
 
         let conversatyions = responseJson.conversations;
 
@@ -232,12 +237,93 @@ textInputField.addEventListener("keydown", async function (event) {
 
 
 socket.on('send_message', function (emmitData) {
-    console.log(emmitData, emmitData.sender.id, loggedInUserId.value)
+
     if (emmitData.sender.id !== loggedInUserId.value) {
-        chatMessageList.appendChild(createReceiverDiv(emmitData));
-        scrollToBottom(chatMessageList);
+
+        updateMessageList(emmitData.conversation_id);
+
+        let getConversationDiv = document.querySelector(`[data-conversationId="${emmitData.conversation_id}"]`);
+
+        if (conversationId.value.length > 0) {
+            if (conversationId.value == emmitData.conversation_id) {
+                chatMessageList.appendChild(createReceiverDiv(emmitData));
+                scrollToBottom(chatMessageList);
+            } else {
+                createConversationListDiv(emmitData);
+            }
+        } else {
+            createConversationListDiv(emmitData);
+        }
+
+
     }
 });
+
+
+// create conversation list div
+function createConversationListDiv(conversationInfo) {
+    let getConversationDiv = document.querySelector(`[data-conversationId="${conversationInfo.conversation_id}"]`);
+
+    if (typeof (getConversationDiv) == 'undefined' && getConversationDiv == null) {
+        let conversation = createElement('div', 'conversation');
+        let userImage = createElement('div', 'user-image');
+        let badge = createElement('span', 'badge badge--smaller badge--info');
+        let avatar = createElement('img', 'avatar');
+        let titleText = createElement('div', 'title-text');
+        let date = createElement('div', 'conversation-message created-date');
+
+        // main conversation list div
+        let getConversationListFunction = "getConversationList(this, '" + conversationInfo.conversation_id + "', '" + conversationInfo.receiver.id + "')";
+        conversation.setAttribute('onclick', getConversationListFunction);
+
+        // badge configuration
+        badge.setAttribute('id', 'badg-' + conversationInfo.conversation_id);
+        badge.innerText = 1;
+
+        // user avater configuration
+        let src = (conversationInfo.receiver.avatar) ? ('./uploads/avatars/' + conversationInfo.receiver.avatar) : './images/user1.png';
+        let style = (conversationInfo.receiver.avatar) ? 'grid-row: span 2;width: 40px;height: 40px;border-radius: 100%;border: 2px solid var(--blue);' : '';
+        avatar.setAttribute('src', src);
+        avatar.setAttribute('style', style);
+        avatar.setAttribute('alt', conversationInfo.receiver.name);
+
+        // title text configuration
+        titleText.innerText = conversationInfo.receiver.name;
+
+        // date configuration
+        date.innerText = conversationDateFormat(conversationInfo.created_at);
+
+        // append child
+        userImage.appendChild(badge);
+        userImage.appendChild(avatar);
+
+        conversation.appendChild(userImage);
+        conversation.appendChild(titleText);
+        conversation.appendChild(date);
+
+        conversationList.appendChild(conversation);
+    }
+}
+
+
+// update message list
+function updateMessageList(conversation_id) {
+    let getConversationDiv = document.querySelector(`[data-conversationId="${conversation_id}"]`);
+    if (getConversationDiv) {
+        if (conversation_id != conversationId.value) {
+            let badge = $('#badg-' + conversation_id);
+
+            if (badge.is(':visible')) {
+                let currentBadge = parseInt(badge.text());
+                badge.text(currentBadge + 1);
+            } else {
+                badge.show();
+                badge.innerText = 1;
+            }
+        }
+    }
+
+}
 
 
 // inbox page init function

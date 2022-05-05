@@ -5,8 +5,9 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var dotenv = require('dotenv');
 var mongoose = require('mongoose');
+// var {getTotalUnreadMessagesByConversationID} = require('./helpers/otherHelperFunctions');
 
-var {notFound, errorHandler} = require('./helpers/errorHandle');
+var {notFound, errorHandler, getTotalUnreadMessagesByConversationID} = require('./helpers/errorHandle');
 
 dotenv.config();
 mongoose.connect(process.env.MONGOOSE_URL_STRING).then(() => {

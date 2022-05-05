@@ -6,14 +6,15 @@
     <input type="text" placeholder="Search"/>
   </div>
   <div id="conversation-list">
-
     <% conversations.forEach( function (conversation) { %>
       <% if( conversation.creator.id == loggedInUser.id ) { %>
         <div class="conversation" data-conversationId="<%= conversation.id %>"
              onclick="getConversationList(this, '<%= conversation._id %>', '<%= conversation.creator.id %>')">
           <div class="user-image">
-            <span id="badg-<%= conversation.id %>" style="display: none"
-                  class="badge badge--smaller badge--info">1</span>
+            <span id="badg-<%= conversation.id %>"
+            <% if( redUnreadMessages[conversation._id].unReadBySender <= 0 ) { %> style="display: none"
+                    <% } %>
+                  class="badge badge--smaller badge--info"> <%= redUnreadMessages[conversation._id].unReadBySender %> </span>
             <% if( conversation.participant.avatar ) { %>
               <img src="./uploads/avatars/<%= conversation.participant.avatar %>"
                    alt="<%= conversation.participant.name %>"/>
@@ -33,8 +34,10 @@
         <div class="conversation" data-conversationId="<%= conversation.id %>"
              onclick="getConversationList(this, '<%= conversation._id %>', '<%= conversation.participant.id %>')">
           <div class="user-image">
-            <span id="badg-<%= conversation.id %>" style="display: none"
-                  class="badge badge--smaller badge--info">1</span>
+            <span id="badg-<%= conversation.id %>"
+            <% if( redUnreadMessages[conversation._id].unReadBySender <= 0 ) { %> style="display: none"
+                    <% } %>
+                  class="badge badge--smaller badge--info"> <%= redUnreadMessages[conversation._id].unReadBySender %> </span>
             <% if( conversation.creator.avatar ) { %>
               <img src="./uploads/avatars/<%= conversation.creator.avatar %>"
                    alt="<%= conversation.creator.name %>"/>

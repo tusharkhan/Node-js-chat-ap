@@ -24,12 +24,16 @@ function showInboxPage(req, res, next) {
             if (conversationError) {
                 return next(conversationError);
             } else {
-                res.render('inbox', {
+                let readUnread = countReadUnreadMessages(conversations)
+                let sendData = {
                     title: 'Inbox',
                     users: result,
                     loggedInUser: req.user,
+                    redUnreadMessages: readUnread,
                     conversations
-                });
+                };
+
+                res.render('inbox', sendData);
             }
         });
     });
@@ -188,6 +192,41 @@ async function sendMessage(req, res, next) {
             }
         });
     }
+}
+
+
+function countReadUnreadMessages(conversations) {
+    console.log(typeof conversations);
+    let resultMain = [];
+
+    for (const conversation of conversations) {
+        let id = conversation._id;
+        resultMain[id] = {
+            unReadBySender: 0,
+            unReadByReceiver: 0
+        };
+
+        Message.find({conversation_id: conversation._id, isReadBySender: false}, function (err, result) {
+            if (err) {
+                console.log(err);
+            } else {
+
+                resultMain[id].unReadBySender = result.length;
+            }
+        });
+
+        Message.find({conversation_id: conversation._id, isReadByReceiver: false})
+            .then(result => {
+                let id = conversation._id;
+                resultMain[id].unreadByReceiver = result.length;
+            })
+            .catch(err => {
+                console.log(err);
+            });
+
+    }
+
+    return resultMain;
 }
 
 

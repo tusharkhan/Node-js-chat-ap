@@ -22,6 +22,10 @@ var participantUserId = document.getElementById('participantUserId');
 var conversationId = document.getElementById('conversationId');
 var conversationList = document.getElementById('conversation-list');
 var socket = io('http://localhost:3000');
+var header = {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json'
+}
 
 // close modal
 closeModal.addEventListener('click', function (e) {
@@ -137,10 +141,7 @@ async function getConversationList(reference, conversation_id, participant_id) {
 
     let response = await fetch(url, {
         method: 'POST',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        },
+        headers: header,
         body: JSON.stringify(postData)
     });
 
@@ -202,11 +203,8 @@ textInputField.addEventListener("keydown", async function (event) {
 
             let response = await fetch(url, {
                 method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                }
-                , body: JSON.stringify(postData)
+                headers: header,
+                body: JSON.stringify(postData)
             });
 
 
@@ -241,8 +239,6 @@ socket.on('send_message', function (emmitData) {
     if (emmitData.sender.id !== loggedInUserId.value) {
 
         updateMessageList(emmitData.conversation_id);
-
-        let getConversationDiv = document.querySelector(`[data-conversationId="${emmitData.conversation_id}"]`);
 
         if (conversationId.value == emmitData.conversation_id) {
             chatMessageList.appendChild(createReceiverDiv(emmitData));
@@ -388,6 +384,53 @@ function createElement(element, className, innerHTML = null) {
         elementToCreate.innerHTML = innerHTML;
     }
     return elementToCreate;
+}
+
+
+// delete user messages
+async function deleteMessages() {
+    let deleteData = {
+        conversation_id: conversationId.value,
+    };
+
+    let url = '/inbox/deleteUserMessages';
+
+    let fetchResponse = await fetch(url, {
+        method: 'DELETE',
+        headers: header,
+        body: JSON.stringify(deleteData)
+    });
+
+    let data = await fetchResponse.json();
+
+    if (fetchResponse.status === 200) {
+        let getConversationDiv = $(`[data-conversationId="${conversationId.value}"]`);
+        console.log(getConversationDiv);
+        chatMessageList.innerHTML = '';
+        getConversationDiv.remove();
+
+        Toastify({
+            text: data.message,
+            duration: 3000,
+            newWindow: true,
+            close: true,
+            gravity: "top", // `top` or `bottom`
+            position: 'right', // `left`, `center` or `right`
+            // backgroundColor: "linear-gradient(to right, #ff6c6c, #f66262)",
+            stopOnFocus: true // Prevents dismissing of toast on hover
+        }).showToast();
+    } else {
+        Toastify({
+            text: 'Something went wrong',
+            duration: 3000,
+            newWindow: true,
+            close: true,
+            gravity: "top", // `top` or `bottom`
+            position: 'right', // `left`, `center` or `right`
+            backgroundColor: "linear-gradient(to right, #ff6c6c, #f66262)",
+            stopOnFocus: true // Prevents dismissing of toast on hover
+        }).showToast();
+    }
 }
 
 

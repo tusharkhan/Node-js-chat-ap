@@ -222,9 +222,56 @@ async function countReadUnreadMessages(conversations) {
 }
 
 
+async function deleteUserMessages(req, res, next) {
+    let conversation_id = req.body.conversation_id;
+    let user_id = req.user.id;
+    let deleteConversation = false;
+
+    let converstion = await Conversation.findById(conversation_id);
+    let stringId = converstion.creator.id.toString();
+
+    // if one is false then check the other
+    // if both are false then delete the conversation
+    if (converstion.deleteByCreator === true || converstion.deleteByParticipant === true) {
+        if (stringId === user_id.toString()) {
+            if (converstion.deleteByCreator !== true && converstion.deleteByParticipant === true)
+                deleteConversation = true;
+        } else {
+            if (converstion.deleteByParticipant !== true && converstion.deleteByCreator === true)
+                deleteConversation = true;
+        }
+
+        // if both are true then delete the conversation
+        // and delete the messages for the conversation
+        if (deleteConversation) {
+            await Conversation.findByIdAndDelete(conversation_id);
+            await Message.deleteMany({conversation_id: conversation_id});
+
+            res.status(200).json({
+                message: 'Conversation deleted'
+            });
+        }
+
+    } else {
+        if (stringId === user_id.toString()) converstion.deleteByCreator = true;
+        else converstion.deleteByParticipant = true;
+
+        await converstion.save();
+
+        res.status(200).json({
+            message: 'Conversation deleted',
+            data: converstion
+        });
+    }
+
+
+}
+
+
 module.exports = {
     sendMessage,
     showInboxPage,
     createConversation,
-    getUserConversationList
+    getUserConversationList,
+    deleteUserMessages
 };

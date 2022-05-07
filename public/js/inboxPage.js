@@ -22,6 +22,10 @@ var participantUserId = document.getElementById('participantUserId');
 var conversationId = document.getElementById('conversationId');
 var conversationList = document.getElementById('conversation-list');
 var socket = io('http://localhost:3000');
+var header = {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json'
+}
 
 // close modal
 closeModal.addEventListener('click', function (e) {
@@ -137,10 +141,7 @@ async function getConversationList(reference, conversation_id, participant_id) {
 
     let response = await fetch(url, {
         method: 'POST',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        },
+        headers: header,
         body: JSON.stringify(postData)
     });
 
@@ -202,11 +203,8 @@ textInputField.addEventListener("keydown", async function (event) {
 
             let response = await fetch(url, {
                 method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                }
-                , body: JSON.stringify(postData)
+                headers: header,
+                body: JSON.stringify(postData)
             });
 
 
@@ -242,8 +240,6 @@ socket.on('send_message', function (emmitData) {
 
         updateMessageList(emmitData.conversation_id);
 
-        let getConversationDiv = document.querySelector(`[data-conversationId="${emmitData.conversation_id}"]`);
-
         if (conversationId.value == emmitData.conversation_id) {
             chatMessageList.appendChild(createReceiverDiv(emmitData));
             scrollToBottom(chatMessageList);
@@ -259,7 +255,7 @@ socket.on('send_message', function (emmitData) {
 function createConversationListDiv(conversationInfo) {
 
     let getConversationDiv = document.querySelector(`[data-conversationId="${conversationInfo.conversation_id}"]`);
-
+// TODO: change user info by logged in user info
     if (typeof (getConversationDiv) == 'undefined' || getConversationDiv == null) {
         let name = (loggedInUserId.value != conversationInfo.sender.id) ? conversationInfo.sender.name : conversationInfo.receiver.name;
 
@@ -303,14 +299,12 @@ function updateMessageList(conversation_id) {
     if (getConversationDiv) {
         if (conversation_id != conversationId.value) {
             let badge = $('#badg-' + conversation_id);
+            let currentBadge = parseInt(badge.text());
 
-            if (badge.is(':visible')) {
-                let currentBadge = parseInt(badge.text());
-                badge.text(currentBadge + 1);
-            } else {
-                badge.show();
-                badge.innerText = 1;
-            }
+            ++currentBadge;
+            badge.show();
+            badge.text(currentBadge);
+
         }
     }
 
@@ -365,7 +359,7 @@ function createReceiverDiv(receiverData) {
     let messageTime = createElement('div', 'message-time', conversationDateFormat(receiverData.created_at));
     let messageContent = createElement('div', 'message-content');
     let participantImage = createElement('img');
-    console.log(receiverData)
+
     if (receiverData.receiver.avatar) {
         participantImage.src = ('./uploads/avatars/' + receiverData.receiver.avatar);
         participantImage.alt = receiverData.receiver.name;
@@ -390,6 +384,52 @@ function createElement(element, className, innerHTML = null) {
         elementToCreate.innerHTML = innerHTML;
     }
     return elementToCreate;
+}
+
+
+// delete user messages
+async function deleteMessages() {
+    let deleteData = {
+        conversation_id: conversationId.value,
+    };
+
+    let url = '/inbox/deleteUserMessages';
+
+    let fetchResponse = await fetch(url, {
+        method: 'DELETE',
+        headers: header,
+        body: JSON.stringify(deleteData)
+    });
+
+    let data = await fetchResponse.json();
+
+    if (fetchResponse.status === 200) {
+        let getConversationDiv = $(`[data-conversationId="${conversationId.value}"]`);
+        chatMessageList.innerHTML = '';
+        getConversationDiv.remove();
+
+        Toastify({
+            text: data.message,
+            duration: 3000,
+            newWindow: true,
+            close: true,
+            gravity: "top", // `top` or `bottom`
+            position: 'right', // `left`, `center` or `right`
+            // backgroundColor: "linear-gradient(to right, #ff6c6c, #f66262)",
+            stopOnFocus: true // Prevents dismissing of toast on hover
+        }).showToast();
+    } else {
+        Toastify({
+            text: 'Something went wrong',
+            duration: 3000,
+            newWindow: true,
+            close: true,
+            gravity: "top", // `top` or `bottom`
+            position: 'right', // `left`, `center` or `right`
+            backgroundColor: "linear-gradient(to right, #ff6c6c, #f66262)",
+            stopOnFocus: true // Prevents dismissing of toast on hover
+        }).showToast();
+    }
 }
 
 

@@ -8,7 +8,7 @@ const {
     showInboxPage,
     createConversation,
     getUserConversationList,
-    sendMessage
+    sendMessage, deleteUserMessages
 } = require('../controllers/InboxController');
 const decorateHtmlResponse = require('../helpers/DecorteHtmlResponse');
 const express = require('express');
@@ -22,5 +22,7 @@ router.get('/', decorateHtmlResponse('Inbox Page'), loginAuth, showInboxPage);
 router.post('/getConversationList', loginAuth, getUserConversationList);
 
 router.post('/sendMessage', loginAuth, sendMessage);
+
+router.delete('/deleteUserMessages', loginAuth, deleteUserMessages);
 
 module.exports = router;

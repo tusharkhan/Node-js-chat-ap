@@ -20,11 +20,11 @@ function showInboxPage(req, res, next) {
                 {"creator.id": req.user.id},
                 {"participant.id": req.user.id},
             ]
-        }, function (conversationError, conversations) {
+        }, async function (conversationError, conversations) {
             if (conversationError) {
                 return next(conversationError);
             } else {
-                let readUnread = countReadUnreadMessages(conversations)
+                let readUnread = await countReadUnreadMessages(conversations)
                 let sendData = {
                     title: 'Inbox',
                     users: result,
@@ -195,34 +195,26 @@ async function sendMessage(req, res, next) {
 }
 
 
-function countReadUnreadMessages(conversations) {
-    console.log(typeof conversations);
+async function countReadUnreadMessages(conversations) {
     let resultMain = [];
 
     for (const conversation of conversations) {
-        let id = conversation._id;
+        let id = conversation.id;
         resultMain[id] = {
             unReadBySender: 0,
             unReadByReceiver: 0
         };
 
-        Message.find({conversation_id: conversation._id, isReadBySender: false}, function (err, result) {
-            if (err) {
-                console.log(err);
-            } else {
+        resultMain[id].unReadBySender = await Message.find({
+            conversation_id: conversation._id,
+            isReadBySender: false
+        }).count();
 
-                resultMain[id].unReadBySender = result.length;
-            }
-        });
-
-        Message.find({conversation_id: conversation._id, isReadByReceiver: false})
-            .then(result => {
-                let id = conversation._id;
-                resultMain[id].unreadByReceiver = result.length;
-            })
-            .catch(err => {
-                console.log(err);
-            });
+        resultMain[id].unReadByReceiver = await Message.find({
+            conversation_id: conversation._id,
+            isReadByReceiver: false
+        })
+            .count();
 
     }
 

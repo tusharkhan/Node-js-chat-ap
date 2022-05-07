@@ -244,13 +244,9 @@ socket.on('send_message', function (emmitData) {
 
         let getConversationDiv = document.querySelector(`[data-conversationId="${emmitData.conversation_id}"]`);
 
-        if (conversationId.value.length > 0) {
-            if (conversationId.value == emmitData.conversation_id) {
-                chatMessageList.appendChild(createReceiverDiv(emmitData));
-                scrollToBottom(chatMessageList);
-            } else {
-                createConversationListDiv(emmitData);
-            }
+        if (conversationId.value == emmitData.conversation_id) {
+            chatMessageList.appendChild(createReceiverDiv(emmitData));
+            scrollToBottom(chatMessageList);
         } else {
             createConversationListDiv(emmitData);
         }

@@ -143,11 +143,22 @@ async function sendMessage(req, res, next) {
     let receiverInfo = await People.findById(receiver_id);
     let conversation = await Conversation.findById(conversation_id);
 
+    let isReadBySender = false;
+    let isReadByReceiver = false;
+
     if (!senderInfo || !receiverInfo || !conversation) {
         res.status(500).json({
             message: 'Internal Server Error'
         });
     } else {
+
+        console.log(sender_id.toString(), receiver_id.toString(), conversation.creator.id.toString(), conversation.participant.id.toString());
+
+        if (sender_id.toString() == conversation.creator.id.toString()) isReadBySender = true;
+        else isReadByReceiver = true;
+
+        console.log(isReadBySender, isReadByReceiver);
+
         let message = new Message({
             conversation_id: conversation._id,
             sender: {
@@ -160,6 +171,8 @@ async function sendMessage(req, res, next) {
                 name: receiverInfo.name,
                 avatar: receiverInfo.avatar
             },
+            isReadBySender: isReadBySender,
+            isReadByReceiver: isReadByReceiver,
             text: messageText
         });
 
@@ -181,6 +194,8 @@ async function sendMessage(req, res, next) {
                         name: receiverInfo.name,
                         avatar: receiverInfo.avatar
                     },
+                    isReadBySender: isReadBySender,
+                    isReadByReceiver: isReadByReceiver,
                     text: messageText,
                     created_at: new Date().toISOString()
                 });

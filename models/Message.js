@@ -28,7 +28,7 @@ const Schema = mongoose.Schema({
     },
     isReadBySender: {
         type: Boolean,
-        default: true
+        default: false
     },
     isReadByReceiver: {
         type: Boolean,

@@ -407,6 +407,7 @@ async function deleteMessages() {
         let getConversationDiv = $(`[data-conversationId="${conversationId.value}"]`);
         chatMessageList.innerHTML = '';
         getConversationDiv.remove();
+        chattitle.hide();
 
         Toastify({
             text: data.message,

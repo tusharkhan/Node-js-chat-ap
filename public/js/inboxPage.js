@@ -405,7 +405,6 @@ async function deleteMessages() {
 
     if (fetchResponse.status === 200) {
         let getConversationDiv = $(`[data-conversationId="${conversationId.value}"]`);
-        console.log(getConversationDiv);
         chatMessageList.innerHTML = '';
         getConversationDiv.remove();
 

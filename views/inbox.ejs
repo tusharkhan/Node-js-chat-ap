@@ -13,9 +13,9 @@
                          onclick="getConversationList(this, '<%= conversation._id %>', '<%= conversation.participant.id %>')">
                         <div class="user-image">
               <span id="badg-<%= conversation.id %>"
-              <% if( redUnreadMessages[conversation.id].unReadBySender <= 0 ) { %> style="display: none"
+              <% if( redUnreadMessages[conversation.id].unReadByReceiver <= 0 ) { %> style="display: none"
                       <% } %>
-                    class="badge badge--smaller badge--info"> <%= redUnreadMessages[conversation.id].unReadBySender %></span>
+                    class="badge badge--smaller badge--info"> <%= redUnreadMessages[conversation.id].unReadByReceiver %></span>
                             <% if( conversation.participant.avatar ) { %>
                                 <img src="./uploads/avatars/<%= conversation.participant.avatar %>"
                                      alt="<%= conversation.participant.name %>"/>
@@ -38,19 +38,19 @@
                          onclick="getConversationList(this, '<%= conversation._id %>', '<%= conversation.creator.id %>')">
                         <div class="user-image">
             <span id="badg-<%= conversation.id %>"
-            <% if( redUnreadMessages[conversation._id].unReadByReceiver <= 0 ) { %> style="display: none"
+            <% if( redUnreadMessages[conversation._id].unReadBySender <= 0 ) { %> style="display: none"
                     <% } %>
-                  class="badge badge--smaller badge--info"> <%= redUnreadMessages[conversation.id].unReadByReceiver %> </span>
+                  class="badge badge--smaller badge--info"> <%= redUnreadMessages[conversation.id].unReadBySender %> </span>
                             <% if( conversation.creator.avatar ) { %>
                                 <img src="./uploads/avatars/<%= conversation.creator.avatar %>"
                                      alt="<%= conversation.creator.name %>"/>
                             <% } else { %>
-              <img style="    grid-row: span 2;
+                                <img style="    grid-row: span 2;
     width: 40px;
     height: 40px;
     border-radius: 100%;
     border: 2px solid var(--blue);" src="./images/user1.png" alt="<%= conversation.creator.name %>"/>
-            <% } %>
+                            <% } %>
           </div>
           <div class="title-text"><%= conversation.creator.name %></div>
           <div class="conversation-message created-date"><%= conversation.last_update %></div>

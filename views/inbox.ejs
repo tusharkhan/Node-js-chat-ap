@@ -9,12 +9,14 @@
     <% conversations.forEach( function (conversation) { %>
       <% if( conversation.creator.id == loggedInUser.id ) { %>
         <div class="conversation" data-conversationId="<%= conversation.id %>"
-             onclick="getConversationList(this, '<%= conversation._id %>', '<%= conversation.creator.id %>')">
+             onclick="getConversationList(this, '<%= conversation._id %>', '<%= conversation.participant.id %>')">
           <div class="user-image">
             <span id="badg-<%= conversation.id %>"
-            <% if( redUnreadMessages[conversation._id].unReadBySender <= 0 ) { %> style="display: none"
+            <% if( redUnreadMessages[conversation.id].unReadBySender <= 0 ) { %> style="display: none"
                     <% } %>
-                  class="badge badge--smaller badge--info"> <%= redUnreadMessages[conversation._id].unReadBySender %> </span>
+                  class="badge badge--smaller badge--info"> <%= redUnreadMessages[conversation.id].unReadBySender %> <script>
+
+              </script> </span>
             <% if( conversation.participant.avatar ) { %>
               <img src="./uploads/avatars/<%= conversation.participant.avatar %>"
                    alt="<%= conversation.participant.name %>"/>
@@ -32,12 +34,12 @@
         </div>
       <% } else { %>
         <div class="conversation" data-conversationId="<%= conversation.id %>"
-             onclick="getConversationList(this, '<%= conversation._id %>', '<%= conversation.participant.id %>')">
+             onclick="getConversationList(this, '<%= conversation._id %>', '<%= conversation.creator.id %>')">
           <div class="user-image">
             <span id="badg-<%= conversation.id %>"
-            <% if( redUnreadMessages[conversation._id].unReadBySender <= 0 ) { %> style="display: none"
+            <% if( redUnreadMessages[conversation._id].unReadByReceiver <= 0 ) { %> style="display: none"
                     <% } %>
-                  class="badge badge--smaller badge--info"> <%= redUnreadMessages[conversation._id].unReadBySender %> </span>
+                  class="badge badge--smaller badge--info"> <%= redUnreadMessages[conversation.id].unReadByReceiver %> </span>
             <% if( conversation.creator.avatar ) { %>
               <img src="./uploads/avatars/<%= conversation.creator.avatar %>"
                    alt="<%= conversation.creator.name %>"/>

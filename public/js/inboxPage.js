@@ -244,17 +244,12 @@ socket.on('send_message', function (emmitData) {
 
         let getConversationDiv = document.querySelector(`[data-conversationId="${emmitData.conversation_id}"]`);
 
-        if (conversationId.value.length > 0) {
-            if (conversationId.value == emmitData.conversation_id) {
-                chatMessageList.appendChild(createReceiverDiv(emmitData));
-                scrollToBottom(chatMessageList);
-            } else {
-                createConversationListDiv(emmitData);
-            }
-        } else {
-            createConversationListDiv(emmitData);
+        if (conversationId.value == emmitData.conversation_id) {
+            chatMessageList.appendChild(createReceiverDiv(emmitData));
+            scrollToBottom(chatMessageList);
         }
 
+        createConversationListDiv(emmitData);
 
     }
 });
@@ -262,15 +257,18 @@ socket.on('send_message', function (emmitData) {
 
 // create conversation list div
 function createConversationListDiv(conversationInfo) {
+
     let getConversationDiv = document.querySelector(`[data-conversationId="${conversationInfo.conversation_id}"]`);
 
-    if (typeof (getConversationDiv) == 'undefined' && getConversationDiv == null) {
+    if (typeof (getConversationDiv) == 'undefined' || getConversationDiv == null) {
+        let name = (loggedInUserId.value != conversationInfo.sender.id) ? conversationInfo.sender.name : conversationInfo.receiver.name;
+
         let conversation = createElement('div', 'conversation');
         let userImage = createElement('div', 'user-image');
-        let badge = createElement('span', 'badge badge--smaller badge--info');
+        let badge = createElement('span', 'badge badge--smaller badge--info', 1);
         let avatar = createElement('img', 'avatar');
-        let titleText = createElement('div', 'title-text');
-        let date = createElement('div', 'conversation-message created-date');
+        let titleText = createElement('div', 'title-text', name);
+        let date = createElement('div', 'conversation-message created-date', conversationDateFormat(conversationInfo.created_at));
 
         // main conversation list div
         let getConversationListFunction = "getConversationList(this, '" + conversationInfo.conversation_id + "', '" + conversationInfo.receiver.id + "')";
@@ -278,7 +276,6 @@ function createConversationListDiv(conversationInfo) {
 
         // badge configuration
         badge.setAttribute('id', 'badg-' + conversationInfo.conversation_id);
-        badge.innerText = 1;
 
         // user avater configuration
         let src = (conversationInfo.receiver.avatar) ? ('./uploads/avatars/' + conversationInfo.receiver.avatar) : './images/user1.png';
@@ -286,12 +283,6 @@ function createConversationListDiv(conversationInfo) {
         avatar.setAttribute('src', src);
         avatar.setAttribute('style', style);
         avatar.setAttribute('alt', conversationInfo.receiver.name);
-
-        // title text configuration
-        titleText.innerText = conversationInfo.receiver.name;
-
-        // date configuration
-        date.innerText = conversationDateFormat(conversationInfo.created_at);
 
         // append child
         userImage.appendChild(badge);
@@ -337,13 +328,13 @@ function init() {
 
 function clickedUserInfo(reference) {
     let userTitle = reference.children[1];
-    let userImage = reference.children[0];
 
     chatTitleSpan.innerHTML = userTitle.innerHTML;
     chatTitleImage.style.display = 'block';
 }
 
 
+// chane conversation date format
 function conversationDateFormat(dateToConvert) {
     let date = new Date(dateToConvert);
     return date.toLocaleDateString("en-US", {
@@ -352,6 +343,7 @@ function conversationDateFormat(dateToConvert) {
 }
 
 
+// create sender message list div
 function createSenderDiv(senderData) {
     let senderDiv = createElement('div', 'message-row you-message');
     let messageText = createElement('div', 'message-text', senderData.text);
@@ -366,6 +358,7 @@ function createSenderDiv(senderData) {
 }
 
 
+// create receiver message list div
 function createReceiverDiv(receiverData) {
     let senderDiv = createElement('div', 'message-row other-message');
     let messageText = createElement('div', 'message-text', receiverData.text);
@@ -389,6 +382,7 @@ function createReceiverDiv(receiverData) {
 }
 
 
+// create any element
 function createElement(element, className, innerHTML = null) {
     let elementToCreate = document.createElement(element);
     elementToCreate.className = className;
@@ -399,6 +393,7 @@ function createElement(element, className, innerHTML = null) {
 }
 
 
+// scroll div bottom
 function scrollToBottom(node) {
     node.scrollTop = node.scrollHeight;
 }

@@ -258,6 +258,7 @@ socket.on('send_message', function (emmitData) {
 
 // create conversation list div
 function createConversationListDiv(conversationInfo) {
+    console.log(conversationInfo);
     let getConversationDiv = document.querySelector(`[data-conversationId="${conversationInfo.conversation_id}"]`);
 
     if (typeof (getConversationDiv) == 'undefined' && getConversationDiv == null) {

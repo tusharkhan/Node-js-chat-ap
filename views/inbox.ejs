@@ -9,7 +9,7 @@
     <% conversations.forEach( function (conversation) { %>
       <% if( conversation.creator.id == loggedInUser.id ) { %>
         <div class="conversation" data-conversationId="<%= conversation.id %>"
-             onclick="getConversationList(this, '<%= conversation._id %>', '<%= conversation.creator.id %>')">
+             onclick="getConversationList(this, '<%= conversation._id %>', '<%= conversation.participant.id %>')">
           <div class="user-image">
             <span id="badg-<%= conversation.id %>"
             <% if( redUnreadMessages[conversation.id].unReadBySender <= 0 ) { %> style="display: none"
@@ -34,7 +34,7 @@
         </div>
       <% } else { %>
         <div class="conversation" data-conversationId="<%= conversation.id %>"
-             onclick="getConversationList(this, '<%= conversation._id %>', '<%= conversation.participant.id %>')">
+             onclick="getConversationList(this, '<%= conversation._id %>', '<%= conversation.creator.id %>')">
           <div class="user-image">
             <span id="badg-<%= conversation.id %>"
             <% if( redUnreadMessages[conversation._id].unReadByReceiver <= 0 ) { %> style="display: none"

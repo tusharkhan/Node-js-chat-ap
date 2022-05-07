@@ -259,7 +259,7 @@ socket.on('send_message', function (emmitData) {
 function createConversationListDiv(conversationInfo) {
 
     let getConversationDiv = document.querySelector(`[data-conversationId="${conversationInfo.conversation_id}"]`);
-
+// TODO: change user info by logged in user info
     if (typeof (getConversationDiv) == 'undefined' || getConversationDiv == null) {
         let name = (loggedInUserId.value != conversationInfo.sender.id) ? conversationInfo.sender.name : conversationInfo.receiver.name;
 
@@ -303,14 +303,12 @@ function updateMessageList(conversation_id) {
     if (getConversationDiv) {
         if (conversation_id != conversationId.value) {
             let badge = $('#badg-' + conversation_id);
+            let currentBadge = parseInt(badge.text());
 
-            if (badge.is(':visible')) {
-                let currentBadge = parseInt(badge.text());
-                badge.text(currentBadge + 1);
-            } else {
-                badge.show();
-                badge.innerText = 1;
-            }
+            ++currentBadge;
+            badge.show();
+            badge.text(currentBadge);
+
         }
     }
 
@@ -365,7 +363,7 @@ function createReceiverDiv(receiverData) {
     let messageTime = createElement('div', 'message-time', conversationDateFormat(receiverData.created_at));
     let messageContent = createElement('div', 'message-content');
     let participantImage = createElement('img');
-    console.log(receiverData)
+
     if (receiverData.receiver.avatar) {
         participantImage.src = ('./uploads/avatars/' + receiverData.receiver.avatar);
         participantImage.alt = receiverData.receiver.name;

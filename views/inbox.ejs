@@ -14,9 +14,7 @@
             <span id="badg-<%= conversation.id %>"
             <% if( redUnreadMessages[conversation.id].unReadBySender <= 0 ) { %> style="display: none"
                     <% } %>
-                  class="badge badge--smaller badge--info"> <%= redUnreadMessages[conversation.id].unReadBySender %> <script>
-
-              </script> </span>
+                  class="badge badge--smaller badge--info"> <%= redUnreadMessages[conversation.id].unReadBySender %></span>
             <% if( conversation.participant.avatar ) { %>
               <img src="./uploads/avatars/<%= conversation.participant.avatar %>"
                    alt="<%= conversation.participant.name %>"/>

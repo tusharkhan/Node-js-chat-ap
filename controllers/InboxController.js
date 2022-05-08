@@ -2,6 +2,7 @@
  * created by: tushar Khan
  * email : tushar.khan0122@gmail.com
  * date : 4/8/2022
+ * http://pornhubvybmsymdol4iibwgwtkpwmeyd6luq2gxajgjzfjvotyt5zhyd.onion/view_video.php?viewkey=ph61f2f0f06c34f
  */
 
 const People = require('../models/Peoples');
@@ -121,10 +122,24 @@ function createConversation(req, res, next) {
 
 async function getUserConversationList(req, res, next) {
     let conversation_id = req.body.conversation_id;
-
+    let user_id = req.user.id;
     let conversations = await Message.find({
         conversation_id: conversation_id
     });
+
+    for (const conversationsKey in conversations) {
+        const query = {_id: conversations[conversationsKey]._id} //your query here
+        const update = {} //your update in json here
+        const option = {new: true} //will return updated document
+
+        if (user_id === conversations[conversationsKey].sender.id.toString()) {
+            update.isReadBySender = true;
+        } else {
+            update.isReadByReceiver = true;
+        }
+
+        await Message.findOneAndUpdate(query, update, option);
+    }
 
     res.status(200).json({
         message: 'Conversation Found',
@@ -232,7 +247,7 @@ async function countReadUnreadMessages(conversations) {
             .count();
 
     }
-console.log(resultMain)
+
     return resultMain;
 }
 

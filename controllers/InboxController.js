@@ -232,7 +232,7 @@ async function countReadUnreadMessages(conversations) {
             .count();
 
     }
-
+console.log(resultMain)
     return resultMain;
 }
 

@@ -255,9 +255,11 @@ socket.on('send_message', function (emmitData) {
 function createConversationListDiv(conversationInfo) {
 
     let getConversationDiv = document.querySelector(`[data-conversationId="${conversationInfo.conversation_id}"]`);
-// TODO: change user info by logged in user info
+
     if (typeof (getConversationDiv) == 'undefined' || getConversationDiv == null) {
         let name = (loggedInUserId.value != conversationInfo.sender.id) ? conversationInfo.sender.name : conversationInfo.receiver.name;
+        let id = (loggedInUserId.value != conversationInfo.sender.id) ? conversationInfo.sender.id : conversationInfo.receiver.id;
+        let avatarMain = (loggedInUserId.value != conversationInfo.sender.id) ? conversationInfo.sender.avatar : conversationInfo.receiver.avatar;
 
         let conversation = createElement('div', 'conversation');
         let userImage = createElement('div', 'user-image');
@@ -267,18 +269,18 @@ function createConversationListDiv(conversationInfo) {
         let date = createElement('div', 'conversation-message created-date', conversationDateFormat(conversationInfo.created_at));
 
         // main conversation list div
-        let getConversationListFunction = "getConversationList(this, '" + conversationInfo.conversation_id + "', '" + conversationInfo.receiver.id + "')";
+        let getConversationListFunction = "getConversationList(this, '" + conversationInfo.conversation_id + "', '" + id + "')";
         conversation.setAttribute('onclick', getConversationListFunction);
 
         // badge configuration
         badge.setAttribute('id', 'badg-' + conversationInfo.conversation_id);
 
         // user avater configuration
-        let src = (conversationInfo.receiver.avatar) ? ('./uploads/avatars/' + conversationInfo.receiver.avatar) : './images/user1.png';
+        let src = (avatarMain) ? ('./uploads/avatars/' + avatarMain) : './images/user1.png';
         let style = (conversationInfo.receiver.avatar) ? 'grid-row: span 2;width: 40px;height: 40px;border-radius: 100%;border: 2px solid var(--blue);' : '';
         avatar.setAttribute('src', src);
         avatar.setAttribute('style', style);
-        avatar.setAttribute('alt', conversationInfo.receiver.name);
+        avatar.setAttribute('alt', name);
 
         // append child
         userImage.appendChild(badge);
